@@ -1,0 +1,27 @@
+FROM bde2020/hadoop-base:2.0.0-hadoop2.7.4-java8
+
+WORKDIR /opt
+
+ENV HBASE_HOME=/opt/hbase-2.2.3
+ENV HADOOP_HOME=/opt/hadoop-2.7.4
+ENV PATH=$PATH:$HBASE_HOME/bin
+ENV HBASE_CONF_DIR=$HBASE_HOME/conf
+
+RUN curl -L http://archive.apache.org/dist/hbase/2.2.3/hbase-2.2.3-bin.tar.gz | tar zxf -
+
+# RUN env DEBIAN_FRONTEND=noninteractive apt-get install -y krb5-user
+
+WORKDIR $HBASE_HOME
+
+# REST API
+EXPOSE 8080
+# REST Web UI at :8085/rest.jsp
+EXPOSE 8085
+# Thrift API
+EXPOSE 9090
+# Thrift Web UI at :9095/thrift.jsp
+EXPOSE 9095
+# HBase's Embedded zookeeper cluster
+EXPOSE 2181
+# HBase Master web UI at :16010/master-status;  ZK at :16010/zk.jsp
+EXPOSE 16010
