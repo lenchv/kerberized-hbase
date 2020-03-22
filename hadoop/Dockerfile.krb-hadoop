@@ -1,0 +1,80 @@
+FROM lenchv/hadoop:2.7.4
+
+COPY ./confs/* $HADOOP_CONF_DIR/
+
+ENV KRB_REALM=KERBEROS.SERVER
+ENV FQDN=hackolade.local
+ENV KEYTABS_PATH=/opt/keytabs
+
+# core-site.xml
+
+ENV CORE_CONF_fs_defaultFS=hdfs://hackolade.local:9000
+ENV CORE_CONF_hadoop_security_authentication=kerberos
+ENV CORE_CONF_hadoop_security_authorization=true
+ENV CORE_CONF_hadoop_ssl_require_client_cert=false
+ENV CORE_CONF_hadoop_ssl_hostname_verifier=DEFAULT
+ENV CORE_CONF_hadoop_ssl_keystores_factory_class=org.apache.hadoop.security.ssl.FileBasedKeyStoresFactory
+ENV CORE_CONF_hadoop_ssl_server_conf=ssl-server.xml
+ENV CORE_CONF_hadoop_ssl_client_conf=ssl-client.xml
+ENV CORE_CONF_hadoop_rpc_protection=privacy
+
+RUN sed -i "/<\/configuration>/ s/.*/<property><name>hadoop.security.auth_to_local<\/name><value>\nRULE:[2:\$1@\$0]([jt]t@.*KERBEROS.SERVER)s\/.*\/root\/\nRULE:[2:\$1@\$0]([nd]n@.*KERBEROS.SERVER)s\/.*\/root\/\nRULE:[2:\$1@\$0](hm@.*KERBEROS.SERVER)s\/.*\/root\/\nRULE:[2:\$1-@\$0](rs@.*KERBEROS.SERVER)s\/.*\/root\/\nRULE:[2:\$1@\$0](rm@.*KERBEROS.SERVER)s\/.*\/root\/\nRULE:[2:\$1@\$0](jhs@.*KERBEROS.SERVER)s\/.*\/root\/\nDEFAULT\n<\/value><\/property>\n&/" $HADOOP_CONF_DIR/core-site.xml
+# hdfs-site.xml
+ENV HDFS_CONF_dfs_replication=1
+ENV HDFS_CONF_dfs_permissions=true
+ENV HDFS_CONF_dfs_permissions_supergroup=root
+ENV HDFS_CONF_dfs_namenode_handler_count=100
+ENV HDFS_CONF_ipc_server_max_response_size=5242880
+ENV HDFS_CONF_dfs_block_access_token_enable=true
+ENV HDFS_CONF_dfs_namenode_kerberos_principal=nn/$FQDN@$KRB_REALM
+ENV HDFS_CONF_dfs_web_authentication_kerberos_principal=HTTP/$FQDN@$KRB_REALM
+ENV HDFS_CONF_dfs_web_authentication_kerberos_keytab=$KEYTABS_PATH/spnego.service.keytab
+ENV HDFS_CONF_dfs_datanode_kerberos_principal=dn/$FQDN@$KRB_REALM
+ENV HDFS_CONF_dfs_namenode_keytab_file=$KEYTABS_PATH/nn.service.keytab         
+ENV HDFS_CONF_dfs_datanode_keytab_file=$KEYTABS_PATH/dn.service.keytab
+ENV HDFS_CONF_dfs_https_port=50470
+ENV HDFS_CONF_dfs_https_address=$FQDN:50470
+ENV HDFS_CONF_dfs_datanode_data_dir_perm=750
+ENV HDFS_CONF_dfs_access_time_precision=0
+ENV HDFS_CONF_dfs_cluster_administrators=root
+ENV HDFS_CONF_ipc_server_read_threadpool_size=5
+ENV HDFS_CONF_dfs_namenode_kerberos_internal_spnego_principal=HTTP/$FQDN@$KRB_REALM
+ENV HDFS_CONF_dfs_data_transfer_protection=authentication
+ENV HDFS_CONF_dfs_encrypt_data_transfer=true
+ENV HDFS_CONF_dfs_datanode_data_dir_perm=700
+ENV HDFS_CONF_dfs_datanode_address=0.0.0.0:50010
+ENV HDFS_CONF_dfs_datanode_https_address=0.0.0.0:50075
+ENV HDFS_CONF_dfs_namenode_https___address=$FQDN:50470
+ENV HDFS_CONF_dfs_http_policy=HTTPS_ONLY
+ENV HDFS_CONF_dfs_client_https_need___auth=false
+
+# yarn-site.xml
+
+ENV YARN_CONF_yarn_nodemanager_aux___services=mapreduce_shuffle
+ENV YARN_CONF_yarn_application_classpath=$HADOOP_PREFIX/etc/hadoop,$HADOOP_PREFIX/share/hadoop/common/*,$HADOOP_PREFIX/share/hadoop/common/lib/*,$HADOOP_PREFIX/share/hadoop/hdfs/*,$HADOOP_PREFIX/share/hadoop/hdfs/lib/*,$HADOOP_PREFIX/share/hadoop/mapreduce/*,$HADOOP_PREFIX/share/hadoop/mapreduce/lib/*,$HADOOP_PREFIX/share/hadoop/yarn/*,$HADOOP_PREFIX/share/hadoop/yarn/lib/*
+ENV YARN_CONF_yarn_nodemanager_delete_debug___delay___sec=600
+ENV YARN_CONF_yarn_resourcemanager_principal=rm/$FQDN@$KRB_REALM
+ENV YARN_CONF_yarn_resourcemanager_keytab=$KEYTABS_PATH/rm.service.keytab
+ENV YARN_CONF_yarn_nodemanager_principal=nm/$FQDN@$KRB_REALM
+ENV YARN_CONF_yarn_nodemanager_keytab=$KEYTABS_PATH/nm.service.keytab
+ENV YARN_CONF_yarn_nodemanager_container___executor_class=org.apache.hadoop.yarn.server.nodemanager.LinuxContainerExecutor
+ENV YARN_CONF_yarn_nodemanager_linux___container___executor_path=$HADOOP_PREFIX/bin/container-executor
+ENV YARN_CONF_yarn_nodemanager_linux___container___executor_group=root
+ENV YARN_CONF_yarn_timeline___service_principal=yarn/$FQDN@$KRB_REALM
+ENV YARN_CONF_yarn_timeline___service_keytab=$KEYTABS_PATH/yarn.service.keytab
+ENV YARN_CONF_yarn_resourcemanager_webapp_delegation___token___auth___filter_enabled=true
+ENV YARN_CONF_yarn_timeline___service_http___authentication_type=kerberos
+ENV YARN_CONF_yarn_timeline___service_http___authentication_kerberos_principal=HTTP/$FQDN@$KRB_REALM
+ENV YARN_CONF_yarn_timeline___service_http___authentication_kerberos_keytab=$KEYTABS_PATH/yarn.service.keytab
+
+# mapred-site.xml
+
+ENV MAPRED_CONF_mapreduce_framework_name=yarn
+ENV MAPRED_CONF_mapreduce_jobhistory_keytab=$KEYTABS_PATH/jhs.service.keytab
+ENV MAPRED_CONF_mapreduce_jobhistory_principal=jhs/$FQDN@$KRB_REALM
+ENV MAPRED_CONF_mapreduce_jobhistory_webapp_address=$FQDN:19888
+ENV MAPRED_CONF_mapreduce_jobhistory_webapp_https_address=$FQDN:19889
+ENV MAPRED_CONF_mapreduce_jobhistory_webapp_spnego___keytab___file=$KEYTABS_PATH/spnego.service.keytab
+ENV MAPRED_CONF_mapreduce_jobhistory_webapp_spnego___principal=HTTP/$FQDN@$KRB_REALM
+
+RUN echo "export HADOOP_OPTS=\"\$HADOOP_OPTS -Djavax.net.debug=ssl -Dsun.security.krb5.debug=\"" >> $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
