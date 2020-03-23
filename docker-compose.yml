@@ -1,27 +1,24 @@
 version: "3"
 
 services:
-  # zookeeper:
-  #   image: zookeeper
-  #   hostname: hackolade.local
-  #   ports:
-  #     - "2181:2181"
-  #   volumes:
-  #     - ./kerberos/krb5.conf:/etc/krb5.conf
-  #     - krb-server:/opt/keytabs/
-  # hbase:
-  #   build: hbase/
-  #   ports:
-  #     - "16010:16010"
-  #     - "8085:8085"
-  #     - "8080:8080"
-  #   hostname: hackolade.local
-  #   volumes:
-  #     - ./hbase/confs/hbase-site.xml:/opt/hbase-2.2.3/conf/hive-site.xml
-  #     - ./kerberos/krb5.conf:/etc/krb5.conf
-  #     - krb-server:/opt/keytabs/
-  #   environment:
-  #     HBASE_MANAGES_ZK: "false"
+  hbase:
+    build: hbase/
+    healthcheck:
+      test: (curl -f https://localhost:50470 --insecure && curl -f https://localhost:50075 --insecure) || exit 1
+    ports:
+      - "16010:16010"
+      - "8085:8085"
+      - "8080:8080"
+    hostname: hackolade.local
+    volumes:
+      - ./kerberos/krb5.conf:/etc/krb5.conf
+      - krb-server:/opt/keytabs/
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - zookeeper
+      - kerberos.server
+    environment:
+      HBASE_MANAGES_ZK: "false"
   kerberos.server:
     build:
       dockerfile: Server.dockerfile
@@ -35,26 +32,10 @@ services:
       REALM: KERBEROS.SERVER
       DOMAIN_REALM: kerberos.server
       KERBEROS_ROOT_USER_PASSWORD: root
-      CLIENT_USER: hackolade
-      CLIENT_PASS: hackolade
+      CLIENT_USER: hbase
+      CLIENT_PASS: hbase
     volumes:
       - krb-server:/opt/keytabs/
-  # Hadoop
-  hadoop:
-    image: lenchv/krb-hadoop:2.7.4
-    container_name: hadoop
-    hostname: hackolade.local
-    ports:
-      - 50470:50470
-      - 50070:50070
-      - 50475:50475
-      - 50075:50075
-      - 8088:8088
-      - 8042:8042
-      - 8188:8188
-      - 9000:9000
-    volumes:
-      - ./kerberos/krb5.conf:/etc/krb5.conf
-      - krb-server:/opt/keytabs/
+      - /etc/localtime:/etc/localtime:ro
 volumes:
   krb-server:

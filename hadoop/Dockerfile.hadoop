@@ -19,11 +19,11 @@ RUN mkdir -p /hadoop/dfs/name && \
 	mkdir -p /hadoop/dfs/data && \
 	mkdir -p /hadoop/yarn/timeline
 
-ADD ./run.sh /run.sh
-RUN chmod a+x /run.sh && \
+ADD ./hadoop.sh /hadoop.sh
+RUN chmod a+x /hadoop.sh && \
 	chmod a+x $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
 
-CMD ["/run.sh"]
+CMD ["/hadoop.sh"]
 
 # Namenode
 EXPOSE 50070

@@ -84,6 +84,9 @@ create_hackolade_user() {
 	kadmin -p $KERB_ADMIN_USER/admin -w $KERB_ADMIN_PASS -q "addprinc -randkey rm/$(hostname -f)@${REALM}"
 	kadmin -p $KERB_ADMIN_USER/admin -w $KERB_ADMIN_PASS -q "addprinc -randkey nm/$(hostname -f)@${REALM}"
 
+	kadmin -p $KERB_ADMIN_USER/admin -w $KERB_ADMIN_PASS -q "addprinc -randkey zookeeper/$(hostname -f)@${REALM}"
+	kadmin -p $KERB_ADMIN_USER/admin -w $KERB_ADMIN_PASS -q "addprinc -randkey hbase/$(hostname -f)@${REALM}"
+
 	kadmin -p $KERB_ADMIN_USER/admin -w $KERB_ADMIN_PASS -q "xst -k /opt/keytabs/nn.service.keytab nn/$(hostname -f)"
 	kadmin -p $KERB_ADMIN_USER/admin -w $KERB_ADMIN_PASS -q "xst -k /opt/keytabs/dn.service.keytab dn/$(hostname -f)"
 	kadmin -p $KERB_ADMIN_USER/admin -w $KERB_ADMIN_PASS -q "xst -k /opt/keytabs/spnego.service.keytab HTTP/$(hostname -f)"
@@ -91,6 +94,8 @@ create_hackolade_user() {
 	kadmin -p $KERB_ADMIN_USER/admin -w $KERB_ADMIN_PASS -q "xst -k /opt/keytabs/yarn.service.keytab yarn/$(hostname -f)"
 	kadmin -p $KERB_ADMIN_USER/admin -w $KERB_ADMIN_PASS -q "xst -k /opt/keytabs/rm.service.keytab rm/$(hostname -f)"
 	kadmin -p $KERB_ADMIN_USER/admin -w $KERB_ADMIN_PASS -q "xst -k /opt/keytabs/nm.service.keytab nm/$(hostname -f)"
+	kadmin -p $KERB_ADMIN_USER/admin -w $KERB_ADMIN_PASS -q "xst -k /opt/keytabs/zookeeper.keytab zookeeper/$(hostname -f)"
+	kadmin -p $KERB_ADMIN_USER/admin -w $KERB_ADMIN_PASS -q "xst -k /opt/keytabs/hbase.keytab hbase/$(hostname -f)"
 	kadmin -p $KERB_ADMIN_USER/admin -w $KERB_ADMIN_PASS -q "addprinc -pw ${CLIENT_PASS} ${CLIENT_USER}@${REALM}"
 
 	chmod 777 -R /opt/keytabs

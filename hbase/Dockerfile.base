@@ -1,15 +1,16 @@
-FROM bde2020/hadoop-base:2.0.0-hadoop2.7.4-java8
+FROM lenchv/krb-hadoop:2.7.4
 
 WORKDIR /opt
 
 ENV HBASE_HOME=/opt/hbase-2.2.3
 ENV HADOOP_HOME=/opt/hadoop-2.7.4
-ENV PATH=$PATH:$HBASE_HOME/bin
+ENV ZOO_HOME=/opt/zookeeper-3.4.14
+ENV ZOO_CONF_DIR=$ZOO_HOME/conf
+ENV PATH=$PATH:$HBASE_HOME/bin:$ZOO_HOME/bin
 ENV HBASE_CONF_DIR=$HBASE_HOME/conf
 
 RUN curl -L http://archive.apache.org/dist/hbase/2.2.3/hbase-2.2.3-bin.tar.gz | tar zxf -
-
-# RUN env DEBIAN_FRONTEND=noninteractive apt-get install -y krb5-user
+RUN curl -L http://mirror.csclub.uwaterloo.ca/apache/zookeeper/zookeeper-3.4.14/zookeeper-3.4.14.tar.gz | tar zxf -
 
 WORKDIR $HBASE_HOME
 
