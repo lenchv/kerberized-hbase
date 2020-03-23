@@ -4,5 +4,5 @@ Client {
 	storeKey=true
 	useTicketCache=false
 	keyTab="/opt/keytabs/hbase.keytab"
-	principal="hbase/hackolade.local";
+	principal="hbase/_HOST";
 };

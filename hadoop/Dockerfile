@@ -1,14 +1,16 @@
-FROM lenchv/hadoop:2.7.4
+FROM lenchv/hbase-base:hadoop-2.7.4-hbase-2.2.3
 
-COPY ./confs/* $HADOOP_CONF_DIR/
+COPY ./hadoop/* $HADOOP_CONF_DIR/
+COPY ./hbase/* $HBASE_CONF_DIR/
+COPY ./zoo/* $ZOO_HOME/conf/
 
 ENV KRB_REALM=KERBEROS.SERVER
-ENV FQDN=hackolade.local
+ENV FQDN=_HOST
 ENV KEYTABS_PATH=/opt/keytabs
 
 # core-site.xml
 
-ENV CORE_CONF_fs_defaultFS=hdfs://hackolade.local:9000
+ENV CORE_CONF_fs_defaultFS=hdfs://$FQDN:9000
 ENV CORE_CONF_hadoop_security_authentication=kerberos
 ENV CORE_CONF_hadoop_security_authorization=true
 ENV CORE_CONF_hadoop_ssl_require_client_cert=false
@@ -18,7 +20,7 @@ ENV CORE_CONF_hadoop_ssl_server_conf=ssl-server.xml
 ENV CORE_CONF_hadoop_ssl_client_conf=ssl-client.xml
 ENV CORE_CONF_hadoop_rpc_protection=privacy
 
-RUN sed -i "/<\/configuration>/ s/.*/<property><name>hadoop.security.auth_to_local<\/name><value>\nRULE:[2:\$1@\$0]([jt]t@.*KERBEROS.SERVER)s\/.*\/root\/\nRULE:[2:\$1@\$0]([nd]n@.*KERBEROS.SERVER)s\/.*\/root\/\nRULE:[2:\$1@\$0](hm@.*KERBEROS.SERVER)s\/.*\/root\/\nRULE:[2:\$1-@\$0](rs@.*KERBEROS.SERVER)s\/.*\/root\/\nRULE:[2:\$1@\$0](rm@.*KERBEROS.SERVER)s\/.*\/root\/\nRULE:[2:\$1@\$0](jhs@.*KERBEROS.SERVER)s\/.*\/root\/\nDEFAULT\n<\/value><\/property>\n&/" $HADOOP_CONF_DIR/core-site.xml
+RUN sed -i "/<\/configuration>/ s/.*/<property><name>hadoop.security.auth_to_local<\/name><value>\nRULE:[2:\$1@\$0]([jt]t@.*${KRB_REALM})s\/.*\/root\/\nRULE:[2:\$1@\$0]([nd]n@.*${KRB_REALM})s\/.*\/root\/\nRULE:[2:\$1@\$0](hm@.*${KRB_REALM})s\/.*\/root\/\nRULE:[2:\$1-@\$0](rs@.*${KRB_REALM})s\/.*\/root\/\nRULE:[2:\$1@\$0](rm@.*${KRB_REALM})s\/.*\/root\/\nRULE:[2:\$1@\$0](jhs@.*${KRB_REALM})s\/.*\/root\/\nDEFAULT\n<\/value><\/property>\n&/" $HADOOP_CONF_DIR/core-site.xml
 # hdfs-site.xml
 ENV HDFS_CONF_dfs_replication=1
 ENV HDFS_CONF_dfs_permissions=true
@@ -78,3 +80,12 @@ ENV MAPRED_CONF_mapreduce_jobhistory_webapp_spnego___keytab___file=$KEYTABS_PATH
 ENV MAPRED_CONF_mapreduce_jobhistory_webapp_spnego___principal=HTTP/$FQDN@$KRB_REALM
 
 RUN echo "export HADOOP_OPTS=\"\$HADOOP_OPTS -Djavax.net.debug=ssl -Dsun.security.krb5.debug=\"" >> $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
+
+RUN mkdir -p /hbase/staging && chmod 711 /hbase/staging
+
+WORKDIR $HBASE_HOME
+
+COPY startup.sh /startup.sh
+RUN chmod +x /startup.sh
+
+CMD ["/startup.sh"]

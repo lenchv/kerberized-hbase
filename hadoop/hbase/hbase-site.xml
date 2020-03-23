@@ -23,11 +23,11 @@
 <configuration>
 	<property>
 		<name>hbase.rootdir</name>
-		<value>hdfs://hackolade.local:9000/hbase/data</value>
+		<value>hdfs://_HOST:9000/hbase/data</value>
 	</property>
 	<property>
 		<name>hbase.zookeeper.quorum</name>
-		<value>hackolade.local</value>
+		<value>_HOST</value>
 	</property>
 	<property>
 		<name>hbase.zookeeper.property.clientPort</name>
@@ -43,7 +43,7 @@
 	</property>
 	<property>
 		<name>hbase.master.kerberos.principal</name>
-		<value>hbase/hackolade.local@KERBEROS.SERVER</value>
+		<value>hbase/_HOST@KERBEROS.SERVER</value>
 	</property>
 	<property>
 		<name>hbase.regionserver.keytab.file</name>
@@ -51,7 +51,7 @@
 	</property>
 	<property>
 		<name>hbase.regionserver.kerberos.principal</name>
-		<value>hbase/hackolade.local@KERBEROS.SERVER</value>
+		<value>hbase/_HOST@KERBEROS.SERVER</value>
 	</property>
 	<property>
 		<name>hbase.superuser</name>
@@ -81,7 +81,7 @@
 
 	<property>
 		<name>phoenix.queryserver.kerberos.principal</name>
-		<value>HTTP/hackolade.local@KERBEROS.SERVER</value>
+		<value>HTTP/_HOST@KERBEROS.SERVER</value>
 		<description>The Kerberos principal name that should be used to run the Phoenix Query Server process.
     The principal name should be in the form: user/hostname@DOMAIN.  If "_HOST" is used as the hostname
     portion, it will be replaced with the actual hostname of the running instance.
@@ -106,7 +106,7 @@
 	</property>
 	<property>
 		<name>hbase.rest.authentication.kerberos.principal</name>
-		<value>HTTP/hackolade.local@KERBEROS.SERVER</value>
+		<value>HTTP/_HOST@KERBEROS.SERVER</value>
 	</property>
 	<property>
 		<name>hbase.rest.authentication.kerberos.keytab</name>
@@ -114,7 +114,7 @@
 	</property>
 	<property>
 		<name>hbase.rest.kerberos.principal</name>
-		<value>HTTP/hackolade.local@KERBEROS.SERVER</value>
+		<value>HTTP/_HOST@KERBEROS.SERVER</value>
 	</property>
 	<property>
 		<name>hbase.rest.keytab.file</name>

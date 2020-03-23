@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ALIAS=hackolade.local
+ALIAS=$(hostname -f)
 PASS=bigdata
 
 keytool -genkey \

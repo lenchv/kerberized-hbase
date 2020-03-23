@@ -4,5 +4,5 @@ Server {
     storeKey=true
     useTicketCache=false
     keyTab="/opt/keytabs/zookeeper.keytab"
-    principal="zookeeper/hackolade.local";
+    principal="zookeeper/_HOST";
 };

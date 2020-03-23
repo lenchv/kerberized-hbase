@@ -1,4 +1,4 @@
-hadoop:
-	docker build -t lenchv/hadoop:2.7.4 -f Dockerfile.hadoop .
-krb-hadoop:
-	docker build -t lenchv/krb-hadoop:2.7.4 -f Dockerfile.krb-hadoop .
+hbase-base:
+	docker build -t lenchv/hbase-base:hadoop-2.7.4-hbase-2.2.3 -f Dockerfile.base .
+build:
+	docker build -t lenchv/kerberized-hbase:1.0 .
