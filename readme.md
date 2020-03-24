@@ -47,6 +47,18 @@ cd $HBASE_HOME/logs
 cd $HADOOP_HOME/logs
 ```
 
+## About
+
+Used images:
+
+[bde2020/hadoop-base](https://hub.docker.com/r/bde2020/hadoop-base)
+
+[sequenceiq/kerberos](https://hub.docker.com/r/sequenceiq/kerberos)
+
+Inspired by:
+
+[https://hub.docker.com/r/knappek/phoenix-secure](knappek/phoenix-secure/)
+
 ## License
 
 This project is under MIT License
