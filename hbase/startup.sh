@@ -37,8 +37,8 @@ hdfs dfs -chown -R hbase:hadoop /tmp
 kdestroy
 
 # Start up Hbase and REST API Server
-/opt/hbase-2.2.3/bin/start-hbase.sh
-/opt/hbase-2.2.3/bin/hbase-daemon.sh start rest
+$HBASE_HOME/bin/start-hbase.sh
+$HBASE_HOME/bin/hbase-daemon.sh start rest
 
 # Show hbase logs
-tail -f /opt/hbase-2.2.3/logs/*.log
+tail -f $HBASE_HOME/logs/*.log
