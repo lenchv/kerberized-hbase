@@ -20,7 +20,7 @@ services:
       HBASE_MANAGES_ZK: "false"
       KRB_ROOT_PASSWORD: root
   kerberos.server:
-    build: lenchv/hbase-kerberos-server:1.0
+    image: lenchv/hbase-kerberos-server:1.0
     container_name: hbase.driver_kerberos.server
     hostname: volodymyr.local
     ports:
