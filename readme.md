@@ -57,7 +57,7 @@ Used images:
 
 Inspired by:
 
-[https://hub.docker.com/r/knappek/phoenix-secure](knappek/phoenix-secure/)
+[knappek/phoenix-secure](https://hub.docker.com/r/knappek/phoenix-secure)
 
 ## License
 
