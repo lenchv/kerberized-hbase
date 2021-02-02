@@ -2,7 +2,8 @@ version: "3"
 
 services:
   hbase:
-    image: lenchv/kerberized-hbase:1.0
+    image: lenchv/kerberized-hbase:1.1-ssl
+    container_name: hbase.server
     healthcheck:
       test: "(printf hbase | kinit hbase@KERBEROS.SERVER && curl -f https://localhost:50470 --insecure && curl -f https://localhost:50075 --insecure && curl -f --negotiate -u : http://volodymyr.local:8080) || exit 1"
     ports:

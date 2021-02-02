@@ -5,6 +5,9 @@ function replace_host() {
 	echo "Host replaced: $1"
 }
 
+# generate ssl
+/generateSsl.sh
+
 # Replace hostname
 
 replace_host $HBASE_CONF_DIR/hbase-client.jaas

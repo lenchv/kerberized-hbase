@@ -11,7 +11,9 @@ RUN mkdir -p /hbase/staging && chmod 711 /hbase/staging
 
 WORKDIR $HBASE_HOME
 
+COPY generateSsl.sh /generateSsl.sh
 COPY startup.sh /startup.sh
 RUN chmod +x /startup.sh
+RUN chmod +x /generateSsl.sh
 
 CMD ["/startup.sh"]

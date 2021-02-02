@@ -1,4 +1,4 @@
-# Kerberized Hbase
+# Kerberized Hbase with SSL
 
 Before running the cluster change "volodymyr.local" to your hostname (hostname -f) in the `docker-compose.yml`.
 
@@ -23,6 +23,14 @@ printf hbase | kinit hbase@KERBEROS.SERVER
 klist
 ```
 
+Copy SSL certificates:
+
+```bash
+mkdir ./certs
+
+docker cp hbase.server:/opt/hbase-2.2.3/certs/key.key ./certs/
+```
+
 After hbase service is healthy
 
 ```bash
@@ -32,7 +40,7 @@ docker-compose ps
 you may check if hbase rest api works:
 
 ```bash
-curl --negotiate -u : http://$(hostname -f)/version/cluster
+curl --insecure --cert ./certs/cert.pem --key ./certs/key.key --negotiate -u : http://$(hostname -f)/version/cluster
 ```
 
 To troubleshoot you can check the log files inside the container:

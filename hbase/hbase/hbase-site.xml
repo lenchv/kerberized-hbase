@@ -128,4 +128,24 @@
 		<name>hadoop.proxyuser.HTTP.hosts</name>
 		<value>*</value>
 	</property>
+
+	<property>
+		<name>hbase.rest.ssl.enabled</name>
+		<value>true</value>
+	</property>
+
+	<property>
+		<name>hbase.rest.ssl.keystore.store</name>
+		<value>/opt/hbase-2.2.3/certs/keystore.jks</value>
+	</property>
+
+	<property>
+		<name>hbase.rest.ssl.keystore.password</name>
+		<value>1a2b3c</value>
+	</property>
+
+	<property>
+		<name>hbase.rest.ssl.keystore.keypassword</name>
+		<value>1a2b3c</value>
+	</property>
 </configuration>
